@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\APRQuote.BLayer\APRQuote.BLayer.csproj" />
+    <ProjectReference Include="..\APRQuote.Contracts\APRQuote.Contracts.csproj" />
+    <ProjectReference Include="..\APRQuote.DAL\APRQuote.DAL.csproj" />
+  </ItemGroup>
+
+
+</Project>
