@@ -1,5 +1,5 @@
 # APRQuote.API
-AprQuote.API is REST API which retrieves and adds Vehicle APR Quote(s).
+AprQuote.API is REST API which retrieves and adds APR Quote(s).
 ----------------------------------------------------------------------------------------------
 Application Structure :
  
