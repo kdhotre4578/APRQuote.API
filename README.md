@@ -31,7 +31,7 @@ AprQuote.Tests
 Technologies :
 
  - Programming Language : C#
- - Back End : .Net Core 3.1
+ - Back End : ASP.NET Core Web API (.Net Core 3.1)
  - Database : Sql Server
  - Unit Test Framework : NUnit
  - Data Access : Entity Framework Core (Code First Approach)
