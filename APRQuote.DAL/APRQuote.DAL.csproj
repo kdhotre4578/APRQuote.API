@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\APRQuote.Contracts\APRQuote.Core.csproj" />
+    <ProjectReference Include="..\APRQuote.Core\APRQuote.Core.csproj" />
   </ItemGroup>
 
 </Project>
