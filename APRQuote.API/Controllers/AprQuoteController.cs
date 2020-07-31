@@ -1,6 +1,6 @@
-﻿using APRQuote.DAL.Models;
+﻿using APRQuote.Core.Models;
 using Microsoft.AspNetCore.Mvc;
-using APRQuote.Contracts;
+using APRQuote.Core.Contracts;
 using APRQuote.BLayer;
 
 namespace APRQuote.API.Controllers
@@ -10,21 +10,18 @@ namespace APRQuote.API.Controllers
     public class AprQuoteController : ControllerBase
     {
         private readonly Validator _validator;
-        private readonly AprQuoteOps _aprQuoteOps;
+        private readonly AprQuoteService _aprQuoteService;
 
-        public AprQuoteController(IRepository<Vehicle> vehicleRepos,
-                    IRepository<QuoteType> quoteTypeRepos,
-                    IRepository<APRPercentRange> aprPercentRangeRepos,
-                    IRepository<Quote> quoteRepos, IUoW aprUow)
+        public AprQuoteController(IAprUoW aprUow)
         {
             _validator = new Validator();
-            _aprQuoteOps = new AprQuoteOps(vehicleRepos, quoteTypeRepos, aprPercentRangeRepos, quoteRepos, aprUow);
+            _aprQuoteService = new AprQuoteService(aprUow);
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            var aprQuote = _aprQuoteOps.GetAllQuotes();
+            var aprQuote = _aprQuoteService.GetAllQuotes();
             return Ok(aprQuote);
         }
 
@@ -36,7 +33,7 @@ namespace APRQuote.API.Controllers
                 return BadRequest("Invalid Id");
             }
 
-            AprQuote aprQuote = _aprQuoteOps.GetQuotes(id);
+            AprQuote aprQuote = _aprQuoteService.GetQuote(id);
 
             if (aprQuote == null)
             {
@@ -54,7 +51,7 @@ namespace APRQuote.API.Controllers
                 return BadRequest("Invalid Quote");
             }
 
-            if (_aprQuoteOps.AddQuote(aprQuote))
+            if (_aprQuoteService.AddQuote(aprQuote))
             {
                 return Accepted(aprQuote);
             }

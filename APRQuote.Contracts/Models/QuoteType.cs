@@ -1,0 +1,11 @@
+﻿using System;
+
+namespace APRQuote.Core.Models
+{
+    public class QuoteType
+    {
+        public int Id { get; set; }
+
+        public string Type { get; set; }
+    }
+}

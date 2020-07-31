@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\APRQuote.Contracts\APRQuote.Contracts.csproj" />
+    <ProjectReference Include="..\APRQuote.Contracts\APRQuote.Core.csproj" />
     <ProjectReference Include="..\APRQuote.DAL\APRQuote.DAL.csproj" />
   </ItemGroup>
 

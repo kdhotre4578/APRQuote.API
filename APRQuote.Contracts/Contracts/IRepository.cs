@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace APRQuote.Contracts
+namespace APRQuote.Core.Contracts
 {
     public interface IRepository<T> : IBaseRepository<T> where T : class
     {

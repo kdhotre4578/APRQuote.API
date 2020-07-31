@@ -1,4 +1,5 @@
-﻿using APRQuote.DAL.Models;
+﻿using APRQuote.DAL.Configurations;
+using APRQuote.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace APRQuote.DAL.Context
@@ -30,6 +31,14 @@ namespace APRQuote.DAL.Context
             {
                 optionsBuilder.UseSqlServer(connectionString);
             }
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new VehicleConfig());
+            modelBuilder.ApplyConfiguration(new QuoteTypeConfig());
+            modelBuilder.ApplyConfiguration(new APRPercentRangeConfig());
+            modelBuilder.ApplyConfiguration(new QuoteConfig());
         }
     }
 }

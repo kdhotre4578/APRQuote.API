@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using APRQuote.API.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using APRQuote.DAL.Models;
+using APRQuote.Core.Models;
 using System.Linq;
 using APRQuote.DAL.Data;
-using APRQuote.BLayer;
 
 namespace APRQuote.Test
 {
@@ -204,10 +204,7 @@ namespace APRQuote.Test
 
         private AprQuoteController GetController()
         {
-            return new AprQuoteController(new Repository<Vehicle>(context),
-                new Repository<QuoteType>(context),
-                new Repository<APRPercentRange>(context),
-                new Repository<Quote>(context), new AprContextUoW(context));
+            return new AprQuoteController(new AprContextUoW(context));
         }
 
         private void SeedData()

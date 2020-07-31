@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using APRQuote.Contracts;
+using APRQuote.Core.Contracts;
 using APRQuote.DAL.Context;
 using APRQuote.DAL.Data;
 
@@ -16,21 +15,19 @@ namespace APRQuote.DAL.Models
         public Repository(AprQuoteDbContext aprQuoteDbContext)
         {
             _dbContext = aprQuoteDbContext;
+            EnsureDbCreated();
         }
 
         public Repository(string connectionString)
         {
             _dbContext = new AprQuoteDbContext(connectionString);
-
-            if (_dbContext.Database.EnsureCreated())
-            {
-                new TestData().SeedDataAprQuote(_dbContext);
-            }
+            EnsureDbCreated();
         }
 
         public Repository(IUoW uoW)
         {
             _dbContext = ((AprContextUoW)uoW).dbContext;
+            EnsureDbCreated();
         }
 
         public IEnumerable<T> Get()
@@ -83,6 +80,14 @@ namespace APRQuote.DAL.Models
         public void SetUoW(IUoW uoW)
         {
             this._dbContext = ((AprContextUoW)uoW).dbContext;
+        }
+
+        private void EnsureDbCreated()
+        {
+            if (_dbContext.Database.EnsureCreated())
+            {
+                new TestData().SeedDataAprQuote(_dbContext);
+            }
         }
     }
 

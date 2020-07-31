@@ -1,5 +1,5 @@
 ﻿using APRQuote.DAL.Context;
-using APRQuote.DAL.Models;
+using APRQuote.Core.Models;
 using System.Collections.Generic;
 
 namespace APRQuote.DAL.Data

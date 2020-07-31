@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using APRQuote.DAL.Models;
-using APRQuote.Contracts;
+using APRQuote.Core.Contracts;
 using APRQuote.API.Extension;
 using APRQuote.BLayer;
 
@@ -35,11 +35,8 @@ namespace APRQuote.API
 
             string connectionString = Configuration.GetConnectionString(DB_NAME);
 
-            services.AddScoped<IUoW>(x => new AprContextUoW(connectionString));
-            services.AddScoped<IRepository<Vehicle>>(x => new Repository<Vehicle>(connectionString));
-            services.AddScoped<IRepository<QuoteType>>(x => new Repository<QuoteType>(connectionString));
-            services.AddScoped<IRepository<APRPercentRange>>(x => new Repository<APRPercentRange>(connectionString));
-            services.AddScoped<IRepository<Quote>>(x => new Repository<Quote>(connectionString));
+            services.AddScoped<IAprUoW>(x => new AprContextUoW(connectionString));
+            services.AddScoped<IAprQuote, AprQuoteService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -9,9 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APRQuote.DAL", "APRQuote.DA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APRQuote.Test", "APRQuote.Test\APRQuote.Test.csproj", "{5B6E29EC-12BE-46B8-B606-F30089F3576C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APRQuote.Contracts", "APRQuote.Contracts\APRQuote.Contracts.csproj", "{EA8AA2A8-50CE-4E43-AD39-57AABA559718}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APRQuote.Core", "APRQuote.Contracts\APRQuote.Core.csproj", "{EA8AA2A8-50CE-4E43-AD39-57AABA559718}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APRQuote.BLayer", "APRQuote.BLayer\APRQuote.BLayer.csproj", "{6BFD0F48-0AEF-4D13-AC50-51A4D1ACC067}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APRQuote.BLayer", "APRQuote.BLayer\APRQuote.BLayer.csproj", "{6BFD0F48-0AEF-4D13-AC50-51A4D1ACC067}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

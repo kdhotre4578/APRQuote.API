@@ -1,40 +1,31 @@
 ﻿using System.Collections.Generic;
-using APRQuote.Contracts;
-using APRQuote.DAL.Models;
+using APRQuote.Core.Contracts;
+using APRQuote.Core.Models;
 using System.Linq;
 using System;
 
 namespace APRQuote.BLayer
 {
-    public class AprQuoteOps
+    public class AprQuoteService : IAprQuote
     {
         private readonly IRepository<Vehicle> _vehicleRepos;
         private readonly IRepository<QuoteType> _quoteTypeRepos;
         private readonly IRepository<APRPercentRange> _aprPercentRangeRepos;
         private readonly IRepository<Quote> _quoteRepos;
-        private readonly IUoW _aprUoW;
+        private readonly IAprUoW _aprUoW;
 
-        public AprQuoteOps(IRepository<Vehicle> vehicleRepos, 
-                    IRepository<QuoteType> quoteTypeRepos,
-                    IRepository<APRPercentRange> aprPercentRangeRepos,
-                    IRepository<Quote> quoteRepos, IUoW aprUow)
+        public AprQuoteService(IAprUoW aprUow)
         {
-            _vehicleRepos = vehicleRepos;
-            _quoteTypeRepos = quoteTypeRepos;
-            _aprPercentRangeRepos = aprPercentRangeRepos;
-            _quoteRepos = quoteRepos;
-
-            // Set UoW context to all the repositories
-            _vehicleRepos.SetUoW(aprUow);
-            _quoteTypeRepos.SetUoW(aprUow);
-            _aprPercentRangeRepos.SetUoW(aprUow);
-            _quoteRepos.SetUoW(aprUow);
+            _vehicleRepos = aprUow.VehicleRepository;
+            _quoteTypeRepos = aprUow.QuoteTypeRepository;
+            _aprPercentRangeRepos = aprUow.APRPercentRangeRepository;
+            _quoteRepos = aprUow.QuoteRepository;
 
             this._aprUoW = aprUow;
         }
 
         /// <summary>
-        /// Gets all APR Percentage range quotes
+        /// Gets all APR Percentage range quotes with vehicle and quote type details
         /// </summary>
         /// <returns>quotes</returns>
         public IEnumerable<AprQuote> GetAllQuotes()
@@ -59,10 +50,10 @@ namespace APRQuote.BLayer
         }
 
         /// <summary>
-        /// Gets APR Percentage range quote as per given Id
+        /// Gets APR Percentage range quote with vehicle and quote type details as per given Id
         /// </summary>
         /// <returns>quote</returns>
-        public AprQuote GetQuotes(int id)
+        public AprQuote GetQuote(int id)
         {
             if (id <= 0)
             {
@@ -177,7 +168,7 @@ namespace APRQuote.BLayer
             }
             catch(Exception ex) 
             {
-                _aprUoW.Rollback();
+                _aprUoW.Dispose();
                 saveChanges = false;
             }
 

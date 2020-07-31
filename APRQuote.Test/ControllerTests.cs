@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace APRQuote.Test
 {
     [TestFixture]
-    public class ControllerTests : IDisposable
+    public abstract class ControllerTests : IDisposable
     {
         protected AprQuoteDbContext context;
 
@@ -35,7 +35,7 @@ namespace APRQuote.Test
 
         public void Dispose()
         {
-            context.Dispose();
+            context?.Dispose();
         }
     }
 }

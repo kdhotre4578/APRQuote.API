@@ -1,12 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
 
-namespace APRQuote.DAL.Models
+namespace APRQuote.Core.Models
 {
-    [Table("TblAPRPercentRanges")]
     public class APRPercentRange
     {
-        [Key]
         public int Id { get; set; }
 
         public double ZeroThreeMonths { get; set; }

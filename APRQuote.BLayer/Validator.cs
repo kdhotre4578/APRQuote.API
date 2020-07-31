@@ -1,4 +1,4 @@
-﻿using APRQuote.Contracts;
+﻿using APRQuote.Core.Models;
 
 namespace APRQuote.BLayer
 {

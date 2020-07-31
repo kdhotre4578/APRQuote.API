@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace APRQuote.BLayer
+namespace APRQuote.Core.Models
 {
     public class AprQuote
     {
