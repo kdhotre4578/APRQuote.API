@@ -36,7 +36,7 @@ namespace APRQuote.API
             string connectionString = Configuration.GetConnectionString(DB_NAME);
 
             services.AddScoped<IAprUoW>(x => new AprContextUoW(connectionString));
-            services.AddScoped<IAprQuote, AprQuoteService>();
+            services.AddScoped<IAprQuoteService, AprQuoteService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

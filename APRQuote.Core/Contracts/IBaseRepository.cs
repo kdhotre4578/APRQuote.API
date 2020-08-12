@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace APRQuote.Core.Contracts
 {
     public interface IBaseRepository<T> where T : class
     {
-        IEnumerable<T> Get();
+        Task<IEnumerable<T>> Get();
 
-        T Get(Expression<Func<T, bool>> expression);
+        Task<T> Get(Expression<Func<T, bool>> expression);
 
-        bool Add(T t);
+        Task<bool> Add(T t);
 
         void SetUoW(IUoW uoW);
 

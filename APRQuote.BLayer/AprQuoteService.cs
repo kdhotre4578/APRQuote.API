@@ -3,10 +3,12 @@ using APRQuote.Core.Contracts;
 using APRQuote.Core.Models;
 using System.Linq;
 using System;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace APRQuote.BLayer
 {
-    public class AprQuoteService : IAprQuote
+    public class AprQuoteService : IAprQuoteService
     {
         private readonly IRepository<Vehicle> _vehicleRepos;
         private readonly IRepository<QuoteType> _quoteTypeRepos;
@@ -28,12 +30,12 @@ namespace APRQuote.BLayer
         /// Gets all APR Percentage range quotes with vehicle and quote type details
         /// </summary>
         /// <returns>quotes</returns>
-        public IEnumerable<AprQuote> GetAllQuotes()
+        public async Task<IEnumerable<AprQuote>> GetAllQuotes()
         {
-            IEnumerable<AprQuote> aprQuotes = (from q in _quoteRepos.Get()
-                          join v in _vehicleRepos.Get() on q.VehicleId equals v.Id 
-                          join qt in _quoteTypeRepos.Get() on q.QuoteTypeId equals qt.Id 
-                          join apr in _aprPercentRangeRepos.Get() on q.APRPercentRangeId equals apr.Id
+            IEnumerable<AprQuote> aprQuotes = (from q in _quoteRepos.Get().Result
+                          join v in _vehicleRepos.Get().Result on q.VehicleId equals v.Id 
+                          join qt in _quoteTypeRepos.Get().Result on q.QuoteTypeId equals qt.Id 
+                          join apr in _aprPercentRangeRepos.Get().Result on q.APRPercentRangeId equals apr.Id
                           select new AprQuote
                           {
                               Id = q.Id,
@@ -44,26 +46,26 @@ namespace APRQuote.BLayer
                               ThreeSixMonths = apr.ThreeSixMonths,
                               SixTwelveMonths = apr.SixTwelveMonths,
                               TwelvePlusMonths = apr.TwelvePlusMonths
-                          }).ToList();
+                          });
 
-            return aprQuotes;
+            return await aprQuotes.ToAsyncEnumerable().ToListAsync();
         }
 
         /// <summary>
         /// Gets APR Percentage range quote with vehicle and quote type details as per given Id
         /// </summary>
         /// <returns>quote</returns>
-        public AprQuote GetQuote(int id)
+        public async Task<AprQuote> GetQuote(int id)
         {
             if (id <= 0)
             {
                 return null;
             }
 
-            AprQuote quote = (from q in _quoteRepos.Get()
-                    join v in _vehicleRepos.Get() on q.VehicleId equals v.Id
-                    join qt in _quoteTypeRepos.Get() on q.QuoteTypeId equals qt.Id
-                    join apr in _aprPercentRangeRepos.Get() on q.APRPercentRangeId equals apr.Id
+            var quote = (from q in _quoteRepos.Get().Result
+                              join v in _vehicleRepos.Get().Result on q.VehicleId equals v.Id
+                    join qt in _quoteTypeRepos.Get().Result on q.QuoteTypeId equals qt.Id
+                    join apr in _aprPercentRangeRepos.Get().Result on q.APRPercentRangeId equals apr.Id
                     where q.Id == id
                     select new AprQuote
                     {
@@ -75,9 +77,9 @@ namespace APRQuote.BLayer
                         ThreeSixMonths = apr.ThreeSixMonths,
                         SixTwelveMonths = apr.SixTwelveMonths,
                         TwelvePlusMonths = apr.TwelvePlusMonths
-                    }).FirstOrDefault();
+                    }).ToAsyncEnumerable().FirstOrDefaultAsync();
             
-            return quote;
+            return await quote;
         }
 
         /// <summary>
@@ -85,7 +87,7 @@ namespace APRQuote.BLayer
         /// </summary>
         /// <param name="aprQuote">quote</param>
         /// <returns>successfully added</returns>
-        public bool AddQuote(AprQuote aprQuote)
+        public async Task<bool> AddQuote(AprQuote aprQuote)
         {
             bool saveChanges = false;
 
@@ -98,23 +100,23 @@ namespace APRQuote.BLayer
 
                 // Vehicle
 
-                Vehicle vehicle = _vehicleRepos.Get(v => v.Make == aprQuote.Make && v.VehicleType == aprQuote.VehicleType);
+                Vehicle vehicle = await _vehicleRepos.Get(v => v.Make == aprQuote.Make && v.VehicleType == aprQuote.VehicleType);
 
                 if (vehicle == null)
                 {
                     vehicle = new Vehicle() { Make = aprQuote.Make, VehicleType = aprQuote.VehicleType };
-                    _vehicleRepos.Add(vehicle);
+                    await _vehicleRepos.Add(vehicle);
                     saveChanges = true;
                 }
 
                 // QuoteType
 
-                QuoteType quoteType = _quoteTypeRepos.Get(q => q.Type == aprQuote.QuoteType);
+                QuoteType quoteType = await _quoteTypeRepos.Get(q => q.Type == aprQuote.QuoteType);
 
                 if (quoteType == null)
                 {
                     quoteType = new QuoteType() { Type = aprQuote.QuoteType };
-                    _quoteTypeRepos.Add(quoteType);
+                    await _quoteTypeRepos.Add(quoteType);
                     saveChanges = true;
                 }
 
@@ -123,7 +125,7 @@ namespace APRQuote.BLayer
                 APRPercentRange aprPercentRange = _aprPercentRangeRepos.Get(a => a.ZeroThreeMonths == aprQuote.ZeroThreeMonths
                                         && a.ThreeSixMonths == aprQuote.ThreeSixMonths
                                         && a.SixTwelveMonths == aprQuote.SixTwelveMonths
-                                        && a.TwelvePlusMonths == aprQuote.TwelvePlusMonths);
+                                        && a.TwelvePlusMonths == aprQuote.TwelvePlusMonths).Result;
 
                 if (aprPercentRange == null)
                 {
@@ -135,21 +137,21 @@ namespace APRQuote.BLayer
                         TwelvePlusMonths = aprQuote.TwelvePlusMonths
                     };
 
-                    _aprPercentRangeRepos.Add(aprPercentRange);
+                    await _aprPercentRangeRepos.Add(aprPercentRange);
 
                     saveChanges = true;
                 }
 
                 if (saveChanges)
                 {
-                    _aprUoW.Commit();
+                    await _aprUoW.Commit();
                 }
 
                 // Quote
 
                 Quote quote = _quoteRepos.Get(q => q.VehicleId == vehicle.Id
                                 && q.QuoteTypeId == quoteType.Id
-                                && q.APRPercentRangeId == aprPercentRange.Id);
+                                && q.APRPercentRangeId == aprPercentRange.Id).Result;
 
                 if (quote == null)
                 {
@@ -160,10 +162,10 @@ namespace APRQuote.BLayer
                         APRPercentRangeId = aprPercentRange.Id
                     };
 
-                    _quoteRepos.Add(quote);
+                    await _quoteRepos.Add(quote);
                     saveChanges = true;
 
-                    _aprUoW.Commit();
+                    await _aprUoW.Commit();
                 }
             }
             catch(Exception ex) 

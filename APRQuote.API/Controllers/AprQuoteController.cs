@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using APRQuote.Core.Contracts;
 using APRQuote.BLayer;
+using System.Threading.Tasks;
 
 namespace APRQuote.API.Controllers
 {
@@ -19,21 +20,21 @@ namespace APRQuote.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var aprQuote = _aprQuoteService.GetAllQuotes();
-            return Ok(aprQuote);
+                var aprQuote = await _aprQuoteService.GetAllQuotes();
+                return Ok(aprQuote);
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             if (id <= 0)
             {
                 return BadRequest("Invalid Id");
             }
 
-            AprQuote aprQuote = _aprQuoteService.GetQuote(id);
+            AprQuote aprQuote = await _aprQuoteService.GetQuote(id);
 
             if (aprQuote == null)
             {
@@ -44,14 +45,16 @@ namespace APRQuote.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] AprQuote aprQuote)
+        public async Task<IActionResult> Post([FromBody] AprQuote aprQuote)
         {
             if (aprQuote == null || (!_validator.IsValid(aprQuote)))
             {
                 return BadRequest("Invalid Quote");
             }
 
-            if (_aprQuoteService.AddQuote(aprQuote))
+            var result = await _aprQuoteService.AddQuote(aprQuote);
+
+            if (result)
             {
                 return Accepted(aprQuote);
             }

@@ -24,7 +24,7 @@ namespace APRQuote.Test
             var controller = GetController();
 
             var response = controller.Get();
-            var quotes = response as ObjectResult;
+            var quotes = response.Result as ObjectResult;
             IEnumerable<AprQuote> quoteList = quotes.Value as IEnumerable<AprQuote>;
 
             Assert.AreEqual(0, quoteList.Count());
@@ -36,11 +36,11 @@ namespace APRQuote.Test
             var controller = GetController();
 
             var response = controller.Get(id);
-            var quotes = response as ObjectResult;
+            var quotes = response.Result as ObjectResult;
             AprQuote quote = quotes.Value as AprQuote;
 
             Assert.IsNull(quote);
-            Assert.IsInstanceOf<NotFoundObjectResult>(response);
+            Assert.IsInstanceOf<NotFoundObjectResult>(response.Result);
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace APRQuote.Test
             this.SeedData();
 
             var response = controller.Get();
-            var responseResult = response as ObjectResult;
+            var responseResult = response.Result as ObjectResult;
             var quotes = responseResult.Value as IEnumerable<AprQuote>;
 
             Assert.AreEqual(4, quotes.Count());
@@ -68,7 +68,7 @@ namespace APRQuote.Test
 
             var response = controller.Get(id);
 
-            Assert.IsInstanceOf<BadRequestObjectResult>(response);
+            Assert.IsInstanceOf<BadRequestObjectResult>(response.Result);
         }
 
         #endregion
@@ -83,7 +83,7 @@ namespace APRQuote.Test
             AprQuote aprQuote = GetNewQuote();
             var response = controller.Post(aprQuote);
 
-            Assert.IsInstanceOf<AcceptedResult>(response);
+            Assert.IsInstanceOf<AcceptedResult>(response.Result);
         }
 
         [Test]
@@ -92,10 +92,10 @@ namespace APRQuote.Test
             var controller = GetController();
 
             AprQuote aprQuote = GetNewQuote();
-            controller.Post(aprQuote);
-            var response = controller.Post(aprQuote);
+            var responsePost1 = controller.Post(aprQuote);
+            var responsePost2 = controller.Post(aprQuote);
 
-            Assert.IsInstanceOf<ConflictResult>(response);
+            Assert.IsInstanceOf<ConflictResult>(responsePost2.Result);
         }
 
         #endregion
@@ -110,7 +110,7 @@ namespace APRQuote.Test
             AprQuote aprQuote = null;
             var response = controller.Post(aprQuote);
 
-            Assert.IsInstanceOf<BadRequestObjectResult>(response);
+            Assert.IsInstanceOf<BadRequestObjectResult>(response.Result);
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace APRQuote.Test
             aprQuote = new AprQuote() { Make = "" };
             var response1 = controller.Post(aprQuote);
 
-            Assert.IsInstanceOf<BadRequestObjectResult>(response1);
+            Assert.IsInstanceOf<BadRequestObjectResult>(response1.Result);
 
             // Invalid QuoteType
             aprQuote = new AprQuote() { Make = "Lexus", 
@@ -136,7 +136,7 @@ namespace APRQuote.Test
 
             var response2 = controller.Post(aprQuote);
 
-            Assert.IsInstanceOf<BadRequestObjectResult>(response2);
+            Assert.IsInstanceOf<BadRequestObjectResult>(response2.Result);
 
             // Invalid APR => Zero Three Months
 
@@ -153,7 +153,7 @@ namespace APRQuote.Test
 
             var response3 = controller.Post(aprQuote);
 
-            Assert.IsInstanceOf<BadRequestObjectResult>(response3);
+            Assert.IsInstanceOf<BadRequestObjectResult>(response3.Result);
         }
 
         #endregion
@@ -169,10 +169,10 @@ namespace APRQuote.Test
 
             var postResponse = controller.Post(aprQuote);
 
-            Assert.IsInstanceOf<AcceptedResult>(postResponse);
+            Assert.IsInstanceOf<AcceptedResult>(postResponse.Result);
 
             var getResponse = controller.Get();
-            var responseResult = getResponse as ObjectResult;
+            var responseResult = getResponse.Result as ObjectResult;
             var quotes = responseResult.Value as IEnumerable<AprQuote>;
 
             Assert.AreEqual(1, quotes.Count());
@@ -189,10 +189,10 @@ namespace APRQuote.Test
 
             var postResponse = controller.Post(aprQuote);
 
-            Assert.IsInstanceOf<AcceptedResult>(postResponse);
+            Assert.IsInstanceOf<AcceptedResult>(postResponse.Result);
 
             var getResponse = controller.Get();
-            var responseResult = getResponse as ObjectResult;
+            var responseResult = getResponse.Result as ObjectResult;
             var quotes = responseResult.Value as IEnumerable<AprQuote>;
 
             Assert.AreEqual(5, quotes.Count());

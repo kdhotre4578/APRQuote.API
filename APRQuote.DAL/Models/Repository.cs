@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using APRQuote.Core.Contracts;
 using APRQuote.DAL.Context;
 using APRQuote.DAL.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace APRQuote.DAL.Models
 {
@@ -30,26 +32,26 @@ namespace APRQuote.DAL.Models
             EnsureDbCreated();
         }
 
-        public IEnumerable<T> Get()
+        public async Task<IEnumerable<T>> Get()
         {
-            return _dbContext.Set<T>().AsQueryable<T>().ToList();
+            return await _dbContext.Set<T>().AsQueryable<T>().ToListAsync();
         }
 
-        public T Get(Expression<Func<T, bool>> expression)
+        public async Task<T> Get(Expression<Func<T, bool>> expression)
         {
             if (expression == null)
             {
                 return null;
             }
 
-            return _dbContext.Set<T>().AsQueryable<T>().FirstOrDefault(expression);
+            return await _dbContext.Set<T>().AsQueryable<T>().FirstOrDefaultAsync(expression);
         }
 
-        public bool Add(T t)
+        public async Task<bool> Add(T t)
         {
             if (t != null)
             {
-                _dbContext.Set<T>().Add(t);
+                await _dbContext.Set<T>().AddAsync(t);
                 return true;
             }
 

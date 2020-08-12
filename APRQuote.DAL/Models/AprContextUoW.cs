@@ -2,11 +2,14 @@
 using APRQuote.Core.Contracts;
 using APRQuote.DAL.Context;
 using System;
+using System.Threading.Tasks;
 
 namespace APRQuote.DAL.Models
 {
     public class AprContextUoW : IAprUoW
     {
+        #region private variables
+
         IRepository<Vehicle> _vehicleRepository;
 
         IRepository<QuoteType> _quoteTypeRepository;
@@ -15,6 +18,10 @@ namespace APRQuote.DAL.Models
 
         IRepository<Quote> _quoteRepository;
 
+        #endregion
+
+        #region Properties
+        
         public AprQuoteDbContext dbContext { get; }
 
         public IRepository<Vehicle> VehicleRepository => _vehicleRepository ??= new Repository<Vehicle>(dbContext);
@@ -24,7 +31,11 @@ namespace APRQuote.DAL.Models
         public IRepository<APRPercentRange> APRPercentRangeRepository => _aprPercentRangeRepository ??= new Repository<APRPercentRange>(dbContext);
 
         public IRepository<Quote> QuoteRepository => _quoteRepository ??= new Repository<Quote>(dbContext);
+        
+        #endregion
 
+        #region constructor
+        
         public AprContextUoW(string connectionString)
         {
             dbContext = new AprQuoteDbContext(connectionString);
@@ -34,15 +45,21 @@ namespace APRQuote.DAL.Models
         {
             this.dbContext = dbContext;
         }
+        
+        #endregion
 
-        public void Commit()
+        #region public methods
+
+        public async Task<int> Commit()
         {
-            dbContext.SaveChanges();
+            return await dbContext.SaveChangesAsync();
         }
 
         public void Dispose()
         {
             dbContext.Dispose();
         }
+        
+        #endregion
     }
 }
