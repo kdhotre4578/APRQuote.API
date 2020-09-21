@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using APRQuote.Core.Contracts;
 using APRQuote.BLayer;
 using System.Threading.Tasks;
+using APRQuote.API.Validators;
 
 namespace APRQuote.API.Controllers
 {
@@ -10,12 +11,10 @@ namespace APRQuote.API.Controllers
     [ApiController]
     public class AprQuoteController : ControllerBase
     {
-        private readonly Validator _validator;
         private readonly AprQuoteService _aprQuoteService;
 
         public AprQuoteController(IAprUoW aprUow)
         {
-            _validator = new Validator();
             _aprQuoteService = new AprQuoteService(aprUow);
         }
 
@@ -47,9 +46,12 @@ namespace APRQuote.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] AprQuote aprQuote)
         {
-            if (aprQuote == null || (!_validator.IsValid(aprQuote)))
+            var validator = new QuoteValidator();
+            var validationResult = await validator.ValidateAsync(aprQuote);
+
+            if(!validationResult.IsValid)
             {
-                return BadRequest("Invalid Quote");
+                return BadRequest("Invalid Quote : " + validator.GetErrorDetails(validationResult));
             }
 
             var result = await _aprQuoteService.AddQuote(aprQuote);
